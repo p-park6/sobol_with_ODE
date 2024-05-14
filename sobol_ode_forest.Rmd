@@ -1,0 +1,68 @@
+---
+title: "sobol_with_ode"
+author: "Patty Park, Mariam Garcia, Hazel Vaquero"
+output: html_document
+---
+
+# Assignment: Using Sobel with an ODE
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+#read libraries
+library(tidyverse)
+library(deSolve)
+library(sensitivity)
+```
+
+## Part 1
+
+```{r}
+#load in function
+source("forestgrwth.R")
+```
+
+## Part 2
+
+```{r}
+#create parms list
+parms <- list(K = 250, r = 0.01, g = 2)
+
+#create yearly time frame
+simtimes = seq(from=1, to=300)
+
+#run ode with forestgrwth function
+result = ode(y = 10, time=simtimes, func=forestgrwth, parms=parms)
+
+#rename column name to appropriate names
+colnames(result)=c("time","C")
+
+result = as.data.frame(result)
+
+#find the time it takes to get the threshold
+thresh = 50
+idx = which(result$C > thresh)[1]
+# if it never gets there
+idx = ifelse(is.na(idx), length(result$P), idx)
+# turn this index into a year (might be the same if time step in 1 but just in case it isn't)
+threshyear = result$time[idx]
+threshyear
+
+```
+
+## Part 3
+
+```{r}
+growthgraph <- ggplot(data = result,
+                      aes(x = time, y = C)) +
+  geom_point(col = "cornflowerblue") +
+  geom_vline(xintercept=threshyear, col="red") +
+  labs(x = "Time",
+       y = "Forest Growth",
+       title="Where Canopy Closure exceeds 50kgC") +
+  theme_bw()
+
+print(growthgraph)
+```
+
+## Part 4
+
+
