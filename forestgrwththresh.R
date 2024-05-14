@@ -9,7 +9,7 @@
 
 forestgrwth = function(time, C, parms) {
   
-    if (C >= params$C){ 
+    if (C >= params$thresh){ # to add threshold, replace the stuff in the () with (c >= params$thresh)
       dC = parms$g * (1- C/parms$K)
     }
     else {
