@@ -9,7 +9,7 @@
 
 forestgrwth = function(time, C, parms) {
   
-    if (C >= params$C){ 
+    if (C >= 50){
       dC = parms$g * (1- C/parms$K)
     }
     else {

@@ -90,7 +90,26 @@ colnames(sens_forest$X)= c("r", "K", "g", "thresh")
 
 head(sens_forest$X) #this is the variability of growth rate
 
-#write wrapper function (where does this go?)
+
+# create a compute metrics function to get what we are interested in
+compute_metrics = function(result, thresh) {
+  max_forest_size = max(result$c) #this is the max forest size after 300 years; results will come from the ode function we ran
+  idx = which(result$P > thresh)[1]
+  idx = ifelse(is.na(idx), length(result$P), idx)
+  threshyear = result$time[idx]
+  return(list(maxpop=maxpop, threshyear=threshyear))}
+
+
+
+#write wrapper function
+forest_wrapper = function(r, K, g, Pinitial, simtimes, odefunc, metricfunc) {
+    parms = list(r=r, K=K)
+    result = ode(y=Pinitial, times=simtimes, func=odefunc, parms=parms) 
+    colnames(result)=c("time","C")
+  # get metrics
+  metrics=metricfunc(as.data.frame(result), thresh=50)
+  return(metrics)
+}
 
 
 #conduct sobol indicies for each metric

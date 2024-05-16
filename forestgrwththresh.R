@@ -7,7 +7,7 @@
 #' @param g linear growth rate
 #' @return derivative of population with time
 
-forestgrwth = function(time, C, parms) {
+forestgrwththresh = function(time, C, parms) {
   
     if (C >= params$thresh){ # to add threshold, replace the stuff in the () with (c >= params$thresh)
       dC = parms$g * (1- C/parms$K)
